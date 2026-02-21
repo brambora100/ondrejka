@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Koody | Stream Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body { background: #0f0f0f; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .input-screen { text-align: center; }
+        input { padding: 12px; width: 350px; border-radius: 6px; border: 1px solid #333; background: #1e1e1e; color: white; }
+        button { padding: 12px 25px; background: #60a5fa; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        
+        /* Skrytí přehrávače, pokud není v URL odkaz */
+        #player-screen { display: none; width: 100%; max-width: 900px; text-align: center; }
+        video { width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .back-btn { margin-top: 20px; color: #666; cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div id="search-screen" class="input-screen">
+        <h1>M3U8 Vyhledávač</h1>
+        <input type="text" id="urlInput" placeholder="Vložte .m3u8 odkaz...">
+        <button onclick="redirectToPlayer()">Otevřít přehrávač</button>
+    </div>
+
+    <div id="player-screen">
+        <h2 id="stream-title">Přehrávání streamu...</h2>
+        <video id="video" controls></video>
+        <div class="back-btn" onclick="window.location.href=window.location.pathname"> zpět na vyhledávání</div>
+    </div>
+
+    <script>
+        // Funkce pro přesměrování na novou URL s parametrem
+        function redirectToPlayer() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (url) {
+                // Přesměruje na stejnou stránku, ale přidá ?stream=odkaz
+                window.location.search = "?stream=" + encodeURIComponent(url);
+            } else {
+                alert("Vlož odkaz!");
+            }
+        }
+
+        // Logika pro detekci odkazu v URL po "přesměrování"
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const streamUrl = urlParams.get('stream');
+
+            if (streamUrl) {
+                // Schováme vyhledávání, ukážeme přehrávač
+                document.getElementById('search-screen').style.display = 'none';
+                document.getElementById('player-screen').style.display = 'block';
+
+                const video = document.getElementById('video');
+
+                if (Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(streamUrl);
+                    hls.attachMedia(video);
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = streamUrl;
+                    video.play();
+                }
+            }
+        };
+    </script>
+
+</body>
+</html>
