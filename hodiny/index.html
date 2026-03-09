@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>hodiny asi</title>
+
+<style>
+
+body{
+background:yellow;
+font-family:comic sans ms;
+}
+
+.clock{
+width:300px;
+height:300px;
+border:20px dashed purple;
+border-radius:10%;
+margin:100px;
+position:relative;
+background:lime;
+}
+
+.hand{
+position:absolute;
+left:150px;
+top:150px;
+transform-origin:left;
+}
+
+.hour{
+width:70px;
+height:12px;
+background:blue;
+}
+
+.minute{
+width:150px;
+height:4px;
+background:black;
+}
+
+.second{
+width:250px;
+height:2px;
+background:red;
+}
+
+.number{
+position:absolute;
+font-size:30px;
+color:red;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>hodiny</h1>
+
+<div class="clock">
+
+<div class="hand hour" id="h"></div>
+<div class="hand minute" id="m"></div>
+<div class="hand second" id="s"></div>
+
+<div class="number" style="top:10px; left:100px;">12</div>
+<div class="number" style="top:200px; left:10px;">3</div>
+<div class="number" style="top:250px; left:120px;">6</div>
+<div class="number" style="top:120px; left:260px;">9</div>
+
+</div>
+
+<script>
+
+function time(){
+
+var d = new Date()
+
+var h = d.getHours()
+var m = d.getMinutes()
+var s = d.getSeconds()
+
+document.getElementById("h").style.transform="rotate("+(h*20)+"deg)"
+document.getElementById("m").style.transform="rotate("+(m*5)+"deg)"
+document.getElementById("s").style.transform="rotate("+(s*12)+"deg)"
+
+}
+
+setInterval(time,1000)
+
+</script>
+
+</body>
+</html>
